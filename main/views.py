@@ -32,7 +32,7 @@ class CategoryView(TemplateView):
         'color': lambda queryset, value: queryset.filter(color_iexact=value),
         'min_price': lambda queryset, value: queryset.filter(price_gte=value),
         'max_price': lambda queryset, value: queryset.filter(color_lte=value),
-        'size': lambda queryset, value: queryset.filter(product_size__size__name=value),
+        'size': lambda queryset, value: queryset.filter(product_sizes__size__name=value),
     }
 
 
@@ -107,7 +107,7 @@ class ProductDetailView(DetailView):
         context['related_products'] = Product.objects.filter(
             category=product.category
         ).exclude(id=product.id)[:4]
-        context['current_category'] = product.categoru.slug
+        context['current_category'] = product.category.slug
         return context
 
 
