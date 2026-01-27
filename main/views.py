@@ -29,9 +29,9 @@ class CategoryView(TemplateView):
     template_name = 'main/base.html'
 
     FILTER_MAPPING = {
-        'color': lambda queryset, value: queryset.filter(color_iexact=value),
-        'min_price': lambda queryset, value: queryset.filter(price_gte=value),
-        'max_price': lambda queryset, value: queryset.filter(color_lte=value),
+        'color': lambda queryset, value: queryset.filter(color__iexact=value),
+        'min_price': lambda queryset, value: queryset.filter(price__gte=value),
+        'max_price': lambda queryset, value: queryset.filter(price__lte=value),
         'size': lambda queryset, value: queryset.filter(product_sizes__size__name=value),
     }
 
@@ -114,7 +114,7 @@ class ProductDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = self.get_context_data(**kwargs)
-        if request.headers.get('HX-request'):
+        if request.headers.get('HX-Request'):
             return TemplateResponse(request, 'main/product_detail.html', context)
         raise TemplateResponse(request, self.template_name, context)
 
