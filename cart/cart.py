@@ -1,6 +1,5 @@
 from decimal import Decimal
 from django.shortcuts import get_object_or_404
-from dotenv import set_key
 
 from main.models import Product
 
@@ -29,7 +28,7 @@ class Cart:
             }
 
         if override_quantity:
-            self.cart[cart_key]['quantity'] = override_quantity
+            self.cart[cart_key]['quantity'] = quantity
         else:
             self.cart[cart_key]['quantity'] += quantity
 
@@ -59,14 +58,14 @@ class Cart:
 
     def __iter__(self):
         product_ids = [item['product_id'] for item in self.cart.values()]
-        products = Product.objects.filter(id_in=product_ids)
+        products = Product.objects.filter(id__in=product_ids)
         cart = self.cart.copy()
 
         for product in products:
             for cart_key, cart_item in cart.items():
                 if cart_item['product_id'] == str(product.id):
                     cart_item['product'] = product
-                    cart_item['total_price'] = Decimal(cart_item['price'] * cart_item['quantity'])
+                    cart_item['total_price'] = Decimal(cart_item['price']) * cart_item['quantity']
                     yield cart_item
 
 
@@ -76,7 +75,7 @@ class Cart:
 
 
     def get_total_price(self):
-        total = sum(Decimal(item['price'] * item['quantity'])
+        total = sum(Decimal(item['price']) * item['quantity']
                     for item in self.cart.values())
         return total
 
