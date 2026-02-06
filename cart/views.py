@@ -150,4 +150,10 @@ class RemoveCartItemView(CartMixin, View):
             }, status=400)
 
 
-
+class CartCountView(CartMixin, View):
+    def get(self, request):
+        cart = self.get_cart(request)
+        return JsonResponse({
+            'total_items': cart.total_items,
+            'subtotal': float(cart.subtotal)
+        })
