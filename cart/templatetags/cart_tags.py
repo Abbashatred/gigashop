@@ -2,7 +2,7 @@ from django import template
 from cart.models import Cart
 
 
-register = template.Library
+register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
