@@ -177,3 +177,14 @@ class ClearCartView(CartMixin, View):
         })
 
 
+class CartSummaryView(CartMixin, View):
+    def get(self, request):
+        cart = self.get_cart(request)
+        context = {
+            'cart': cart,
+            'cart_items': cart.items.select_related(
+                'product',
+                'product_size__size',
+            ).order_by('-added_at')
+        }
+        return TemplateResponse(request, 'cart/cart_summary.html', context)
