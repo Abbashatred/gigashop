@@ -170,8 +170,9 @@
 </style>
 
 <script>
-    let selectedSize = null;
-    let selectedSizeId = null;
+    window.selectedSize = null;
+    window.selectedSizeId = null;
+
 
     function changeMainImage(src) {
         const mainImg = document.querySelector('.aspect-square img');
@@ -196,6 +197,8 @@
 
     function addToCart() {
         const productSlug = '{{ product.slug }}';
+
+
         console.log('Product Slug:', productSlug);
 
         // Update selected size before sending
@@ -210,7 +213,7 @@
         let formData = new FormData();
         formData.append('size_id', selectedSizeId);
         formData.append('quantity', '1');
-        fetch(`{% url 'cart:add_to_cart' 'PLACEHOLDER' %}`.replace('PLACEHOLDER', productSlug), {
+        fetch(`/cart/add/${productSlug}/`, {
             method: 'POST',
             body: formData,
             headers: {
@@ -322,17 +325,24 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', initializeSizeRadios);
-    document.addEventListener('htmx:afterSwap', initializeSizeRadios);
-
-    const productCards = document.querySelectorAll('.product-card');
-    productCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-            this.style.transition = 'transform 0.3s ease';
-        });
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
+    document.addEventListener('htmx:afterSwap', function(evt) {
+        if (evt.detail.target.id === 'main-content') {
+            initializeSizeRadios();
+        }
     });
+
+
+    document.body.addEventListener('htmx:afterSwap', function(evt) {
+        if (evt.detail.target.id === 'main-content') {
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        }
+    });
+
 </script>

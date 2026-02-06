@@ -91,7 +91,7 @@ class AddToCartView(CartMixin, View):
         request.session['cart_id'] = cart.id
         request.session.modified = True
 
-        if request.headers.get['HX-Request']:
+        if request.headers.get('HX-Request'):
             return redirect('cart:cart_modal')
         else:
             return JsonResponse({
