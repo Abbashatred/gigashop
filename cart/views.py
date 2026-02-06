@@ -124,3 +124,30 @@ class UpdateCartItemView(CartMixin, View):
         }
         return TemplateResponse(request, 'cart/cart_modal.html', context)
 
+
+class RemoveCartItemView(CartMixin, View):
+    def post(self, request, item_id):
+        cart = self.get_cart(request)
+
+        try:
+            cart_item = cart.items.get(id=item_id)
+            cart_item.delete()
+
+            request.session['cart_id'] = cart.id
+            request.session.modified = True
+
+            context = {
+                'cart': cart,
+                'cart_items': cart.items.select_related(
+                    'product',
+                    'product_size__size',
+                ).order_by('-added_at')
+            }
+            return TemplateResponse(request, 'cart/cart_modal.html', context)
+        except CartItem.DoesNotExist:
+            return JsonResponse({
+                'error': 'Item not found'
+            }, status=400)
+
+
+
