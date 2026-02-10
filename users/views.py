@@ -48,7 +48,7 @@ def profile_view(request):
 
     recommended_products = Product.objects.all().order_by('id')[:3]
 
-    return TemplateResponse(request, 'users/prodile.html', {
+    return TemplateResponse(request, 'users/profile.html', {
         'form': form,
         'user': request.user,
         'recommended_products': recommended_products,
