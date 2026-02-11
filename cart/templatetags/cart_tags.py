@@ -7,7 +7,7 @@ register = template.Library()
 
 @register.simple_tag(takes_context=True)
 def get_cart_count(context):
-    request = context['request']
+    request = context["request"]
     if not request.session.session_key:
         return 0
 
@@ -22,5 +22,5 @@ def get_cart_count(context):
 def multiply(value, arg):
     try:
         return float(value) * float(arg)
-    except(ValueError, TypeError):
+    except ValueError, TypeError:
         return 0
