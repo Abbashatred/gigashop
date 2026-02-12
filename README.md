@@ -19,6 +19,7 @@ docker compose up --build
 ## Что настроено
 
 - `web` сервис запускает Django + Gunicorn.
+- Python-зависимости в контейнере устанавливаются через `uv sync` (без `pip install .`).
 - При старте автоматически выполняются `migrate` и `collectstatic`.
 - `db` сервис — PostgreSQL 16.
 - Настройки проекта читаются из `.env`.
