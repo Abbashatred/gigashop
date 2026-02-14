@@ -14,6 +14,7 @@ from cart.models import Cart
 from main.models import ProductSize
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
+from payment.views import create_stripe_checkout_session
 
 
 @method_decorator(login_required(login_url='users/login'), name='dispatch')
@@ -94,7 +95,36 @@ class CheckoutView(CartMixin, View):
                     quantity=item.quantity,
                     price=item.product.price or Decimal('0.00')
                 )
-            #
-            # try:
-            #     if payment_provider == 'stripe':
-            #         checkout_session =
+
+            try:
+                if payment_provider == 'stripe':
+                    checkout_session = create_stripe_checkout_session(order, request)
+                    cart.clear()
+                    if request.headers.get('HX-Request'):
+                        response = HttpResponse(status=200)
+                        response['HX-Redirect'] = checkout_session.url
+                        return response
+                    return redirect(checkout_session.url)
+            except Exception as e:
+                order.delete()
+                context = {
+                    'form': form,
+                    'cart': cart,
+                    'cart_items': cart.items.select_related('product', 'product_size__size').order_by('_added_at'),
+                    'total_price': total_price,
+                    'error_message': f'Payment processing error: {str(e)}'
+                }
+                if request.headers.get('HX-Request'):
+                    return TemplateResponse(request, 'orders/checkout_content.html', context)
+                return render(request, 'orders/checkout.html', context)
+        else:
+            context = {
+                'form': form,
+                'cart': cart,
+                'cart_items': cart.items.select_related('product', 'product_size__size').order_by('_added_at'),
+                'total_price': total_price,
+                'error_message': f'Please correct the errors on the form.'
+            }
+            if request.headers.get('HX-Request'):
+                return TemplateResponse(request, 'orders/checkout_content.html', context)
+            return render(request, 'orders/checkout.html', context)
