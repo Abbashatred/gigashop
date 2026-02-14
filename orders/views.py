@@ -94,7 +94,7 @@ class CheckoutView(CartMixin, View):
                     quantity=item.quantity,
                     price=item.product.price or Decimal('0.00')
                 )
-
+            #
             # try:
             #     if payment_provider == 'stripe':
             #         checkout_session =
