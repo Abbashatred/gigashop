@@ -5,6 +5,7 @@ from django.template.response import TemplateResponse
 from .models import Category, Product, Size
 from django.db.models import Q
 
+
 class IndexView(TemplateView):
     template_name = "main/base.html"
 
