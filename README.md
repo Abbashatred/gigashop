@@ -13,6 +13,7 @@ Designed for local development, testing, and portfolio demonstration.
 * Gunicorn + Nginx
 * Stripe payment integration
 * uv (modern Python package manager)
+* HTMX Templates
 
 ---
 
