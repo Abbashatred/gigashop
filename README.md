@@ -21,8 +21,7 @@ Designed for local development, testing, and portfolio demonstration.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/gigashop.git
-cd gigashop
+git clone https://github.com/Abbashatred/gigashop.git && cd gigashop
 ```
 
 ---
